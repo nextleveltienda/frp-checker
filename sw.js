@@ -1,4 +1,4 @@
-const CACHE_NAME = 'frp-checker-v1.0';
+const CACHE_NAME = 'frp-checker-v1.1';
 const OFFLINE_URLS = [
   '/',
   '/index.html',
@@ -9,9 +9,9 @@ const OFFLINE_URLS = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(OFFLINE_URLS);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(OFFLINE_URLS))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -24,24 +24,34 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Para requests a la API de Anthropic, siempre ir a red
-  if (event.request.url.includes('api.anthropic.com')) {
+  const req = event.request;
+  const url = new URL(req.url);
+
+  // API y cualquier petición cross-origin (Groq, Google): siempre red, nunca cache.
+  if (req.method !== 'GET' || url.pathname.startsWith('/api/') || url.origin !== self.location.origin) {
     return;
   }
+
+  // Documentos (HTML): network-first, así las actualizaciones aparecen al refrescar.
+  if (req.mode === 'navigate' || req.destination === 'document') {
+    event.respondWith(
+      fetch(req).then(resp => {
+        const clone = resp.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+        return resp;
+      }).catch(() => caches.match(req).then(c => c || caches.match('/index.html')))
+    );
+    return;
+  }
+
+  // Resto de assets: cache-first.
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response && response.status === 200 && response.type === 'basic') {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      }).catch(() => {
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html');
-        }
-      });
-    })
+    caches.match(req).then(cached => cached || fetch(req).then(resp => {
+      if (resp && resp.status === 200 && resp.type === 'basic') {
+        const clone = resp.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+      }
+      return resp;
+    }))
   );
 });

@@ -201,7 +201,9 @@ body{
 .status-pill.unknown{background:var(--bg2);color:var(--text3)}
 
 .tools-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
-.t-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px}
+.t-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:filter .15s}
+a.t-tag:hover{filter:brightness(1.35)}
+.t-tag::after{content:'↗';font-size:9px;opacity:.55}
 .t-tag.octoplus{background:#1a2d4a;color:#4f8ef7;border:1px solid #1e3d6a}
 .t-tag.samfw{background:#1a2d1a;color:#66bb6a;border:1px solid #1e4d1e}
 .t-tag.umt{background:#2d1a3a;color:#ce93d8;border:1px solid #3d1a4a}
@@ -332,7 +334,7 @@ body{
   <div class="search-wrap">
     <div class="search-box">
       <svg class="s-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input id="searchInput" type="search" placeholder="Samsung A32, Moto G82, Xiaomi Note 11..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input id="searchInput" type="search" placeholder="Samsung A32, Moto G82, SM-A225M..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <button class="search-btn" id="searchBtn" onclick="doSearch()">
         <svg id="searchBtnIcon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         <span id="searchBtnTxt">Buscar</span>
@@ -439,6 +441,13 @@ const TOOL_NAMES = {
   octoplus:'Octoplus', samfw:'SamFw', umt:'UMT',
   pandora:'Pandora', nck:'NCK Box', chimera:'Chimera',
   sigma:'SigmaPlus', other:'Otra'
+};
+
+// nombre completo usado para armar la búsqueda en Google al clicar el tag
+const TOOL_SEARCH = {
+  octoplus:'Octoplus FRP Tool', samfw:'SamFw Tool', umt:'UMT UMTv2',
+  pandora:'Pandora Tool', nck:'NCK Box', chimera:'Chimera Tool',
+  sigma:'SigmaPlus', other:''
 };
 
 let history = [];
@@ -592,71 +601,16 @@ async function doSearch(){
       <div class="loading-s">Octoplus · SamFw · UMT · Pandora · NCK · Chimera · SigmaPlus</div>
     </div>`;
 
-  const SYSTEM = `Sos un experto técnico en desbloqueo FRP (Factory Reset Protection) de celulares Android. Tenés años de experiencia con herramientas profesionales de desbloqueo.
-
-El técnico tiene estas herramientas disponibles:
-- Octoplus FRP Tool: soporta Samsung (todos los modelos A, M, S, Note), LG, Huawei via ADB/USB
-- SamFw Tool: exclusivo Samsung, todos los modelos SM-*, via ADB modo descarga
-- UMT/UMTv2: MediaTek (MTK), Qualcomm (QC), Unisoc - Motorola, Xiaomi, TCL, Alcatel
-- Pandora Tool: Samsung Galaxy series, Motorola, LG
-- NCK Box: MTK chipset, Samsung, LG, Alcatel, Nokia
-- Chimera Tool: Samsung, Nokia, LG
-- SigmaPlus: MTK, Unisoc, Qualcomm - marcas chinas
-- 3uTools: utilidades generales
-
-Conocimiento base de FRP por marca:
-- Samsung Galaxy A/M/S series: SamFw Tool y Octoplus FRP siempre funcionan via ADB. Android 9-14 compatible.
-- Motorola Moto G/E/Edge series: UMT via Qualcomm o MTK según modelo. Android 10-13.
-- Xiaomi/Redmi/POCO: UMT o SigmaPlus. Requiere cuenta Mi desbloqueada en algunos casos.
-- LG: Octoplus FRP, NCK Box, Chimera. Mayoría soportada.
-- Huawei (sin GMS): Octoplus FRP via ADB. Limitado en EMUI 10+.
-- Nokia: NCK Box, Chimera. Android One series soportada.
-- Alcatel/TCL: NCK Box, UMT via MTK.
-- Tecno/Infinix/itel: SigmaPlus, UMT via MTK.
-
-Respondé SOLO con un JSON array, sin texto adicional, sin markdown, sin bloques de código:
-[
-  {
-    "model": "nombre completo del modelo",
-    "brand": "marca",
-    "status": "yes|partial|no|unknown",
-    "tools": ["octoplus","samfw","umt","pandora","nck","chimera","sigma","other"],
-    "android": "rango de versiones Android compatibles (ej: Android 10-13)",
-    "notes": "método específico en max 15 palabras",
-    "confidence": "high|medium|low"
-  }
-]
-
-Reglas importantes:
-- Para Samsung SIEMPRE poné status "yes" con tools ["samfw","octoplus"] salvo excepciones muy específicas
-- Para Motorola Moto G/E series casi siempre "yes" con ["umt"]
-- Para Xiaomi/Redmi en general "yes" con ["umt","sigma"]
-- "partial" solo si hay limitaciones reales de versión Android o método complicado
-- "no" solo si genuinamente no hay solución conocida
-- "unknown" solo si el modelo es muy nuevo (2025-2026) sin info
-- Si mencionan número de modelo exacto (SM-A225M etc) usalo en el campo model
-- Confianza "high" para Samsung/Motorola/LG, "medium" para Xiaomi/Huawei, "low" para modelos muy nuevos`;
-
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('/api/check', {
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer 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'
-      },
-      body: JSON.stringify({
-        model:'llama-3.3-70b-versatile',
-        max_tokens:1200,
-        messages:[
-          {role:'system', content: SYSTEM},
-          {role:'user', content:`Verificá FRP para: "${query}". Respondé solo con el JSON array.`}
-        ]
-      })
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ query })
     });
 
-    if(!res.ok) throw new Error(`API error ${res.status}`);
     const data = await res.json();
-    const fullText = data.choices[0].message.content;
+    if(!res.ok) throw new Error(data.error || `API error ${res.status}`);
+    const fullText = data.content || '';
 
     let results = [];
     const match = fullText.match(/\[[\s\S]*\]/);
@@ -722,7 +676,12 @@ function renderResults(results){
     const sl = r.status==='yes'?'✅ Desbloqueable':r.status==='partial'?'⚠️ Parcial':r.status==='no'?'❌ Sin solución':'❓ Sin datos';
     const cc = r.confidence==='high'?'var(--green)':r.confidence==='medium'?'var(--orange)':'var(--red)';
     const cl = r.confidence==='high'?'Alta':r.confidence==='medium'?'Media':'Baja';
-    const toolTags = (r.tools||[]).map(t=>`<span class="t-tag ${t}">${TOOL_NAMES[t]||t}</span>`).join('');
+    const toolTags = (r.tools||[]).map(t=>{
+      const tool = TOOL_SEARCH[t]||TOOL_NAMES[t]||t;
+      const q = encodeURIComponent(`${r.model||''} FRP ${tool} bypass`.trim());
+      const url = `https://www.google.com/search?q=${q}`;
+      return `<a class="t-tag ${t}" href="${url}" target="_blank" rel="noopener" title="Ver datos de FRP de ${escHtml(r.model||'')} con ${escHtml(tool)}">${TOOL_NAMES[t]||t}</a>`;
+    }).join('');
     return `
       <div class="r-card ${sc}">
         <div class="r-head">
