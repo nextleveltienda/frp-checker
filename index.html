@@ -16,190 +16,98 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg0:#0f1117;
-  --bg1:#161b27;
-  --bg2:#1e2433;
-  --bg3:#252b3b;
-  --border:#2a2f3e;
-  --border2:#3a4159;
-  --text1:#e8eaf0;
-  --text2:#a0aab8;
-  --text3:#6a7585;
-  --text4:#4a5468;
-  --accent:#4f8ef7;
-  --accent2:#7c4dff;
-  --green:#4caf50;
-  --orange:#ff9800;
-  --red:#ef5350;
-  --green-bg:#1a3a2a;
-  --orange-bg:#2a2010;
-  --red-bg:#2a1a1a;
+  --bg0:#0f1117;--bg1:#161b27;--bg2:#1e2433;--bg3:#252b3b;
+  --border:#2a2f3e;--border2:#3a4159;
+  --text1:#e8eaf0;--text2:#a0aab8;--text3:#6a7585;--text4:#4a5468;
+  --accent:#4f8ef7;--accent2:#7c4dff;
+  --green:#4caf50;--orange:#ff9800;--red:#ef5350;
+  --green-bg:#1a3a2a;--orange-bg:#2a2010;--red-bg:#2a1a1a;
 }
 html,body{height:100%;overflow:hidden}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg0);color:var(--text1);
-  display:flex;flex-direction:column;
-}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg0);color:var(--text1);display:flex;flex-direction:column}
 
-/* ── HEADER ── */
-.header{
-  background:var(--bg1);
-  border-bottom:1px solid var(--border);
-  padding:12px 16px;
-  display:flex;align-items:center;gap:12px;
-  flex-shrink:0;
-  user-select:none;
-}
-.logo{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border-radius:10px;width:38px;height:38px;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:13px;color:#fff;
-  flex-shrink:0;letter-spacing:.5px;
-}
+/* HEADER */
+.header{background:var(--bg1);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;user-select:none}
+.logo{background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0;letter-spacing:.5px}
 .header-text .title{font-size:16px;font-weight:700;color:var(--text1)}
 .header-text .sub{font-size:11px;color:var(--text3);margin-top:1px}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-.online-pill{
-  background:var(--green-bg);
-  border:1px solid #2d7a4f;
-  color:var(--green);
-  font-size:11px;padding:4px 10px;border-radius:20px;
-  display:flex;align-items:center;gap:5px;white-space:nowrap;
-}
+.online-pill{background:var(--green-bg);border:1px solid #2d7a4f;color:var(--green);font-size:11px;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;white-space:nowrap}
 .pulse{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* install button */
-#installBtn{
-  display:none;
-  background:var(--accent);border:none;color:#fff;
-  font-size:12px;font-weight:600;padding:6px 12px;
-  border-radius:8px;cursor:pointer;
-  align-items:center;gap:5px;
-  transition:background .2s;
-}
+#installBtn{display:none;background:var(--accent);border:none;color:#fff;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;align-items:center;gap:5px;transition:background .2s}
 #installBtn:hover{background:#3d7de0}
 #installBtn svg{width:14px;height:14px}
+.gear-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:8px;font-size:18px;transition:color .15s}
+.gear-btn:hover{color:var(--text1)}
 
-/* ── TABS ── */
-.tabs{
-  display:flex;background:var(--bg1);
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.tab{
-  flex:1;text-align:center;padding:11px 4px;
-  font-size:12px;color:var(--text4);cursor:pointer;
-  border-bottom:2px solid transparent;
-  transition:all .15s;user-select:none;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-}
-.tab .tab-icon{font-size:16px}
+/* TABS */
+.tabs{display:flex;background:var(--bg1);border-bottom:1px solid var(--border);flex-shrink:0}
+.tab{flex:1;text-align:center;padding:9px 2px;font-size:10px;color:var(--text4);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tab .tab-icon{font-size:15px}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .tab:hover:not(.active){color:var(--text2)}
 
-/* ── SCROLL AREA ── */
+/* SCROLL */
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .scroll::-webkit-scrollbar{width:4px}
 .scroll::-webkit-scrollbar-track{background:transparent}
 .scroll::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:4px}
 
-/* ── SEARCH ── */
+/* SEARCH */
 .search-wrap{padding:14px 14px 0}
-.search-box{
-  background:var(--bg2);border:1.5px solid var(--border);
-  border-radius:12px;display:flex;align-items:center;
-  gap:10px;padding:0 12px;transition:border-color .2s;
-}
+.search-box{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 12px;transition:border-color .2s}
 .search-box:focus-within{border-color:var(--accent)}
 .search-box .s-icon{color:var(--text4);flex-shrink:0;width:18px;height:18px}
-#searchInput{
-  background:transparent;border:none;outline:none;
-  color:var(--text1);font-size:15px;padding:13px 0;flex:1;
-  min-width:0;
-}
+#searchInput{background:transparent;border:none;outline:none;color:var(--text1);font-size:15px;padding:13px 0;flex:1;min-width:0}
 #searchInput::placeholder{color:var(--text4)}
-.search-btn{
-  background:var(--accent);border:none;color:#fff;
-  padding:9px 14px;border-radius:8px;cursor:pointer;
-  font-size:13px;font-weight:600;white-space:nowrap;
-  display:flex;align-items:center;gap:5px;
-  transition:background .15s, opacity .15s;
-  flex-shrink:0;
-}
+.search-btn{background:var(--accent);border:none;color:#fff;padding:9px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:background .15s,opacity .15s;flex-shrink:0}
 .search-btn:disabled{opacity:.4;cursor:not-allowed}
 .search-btn:not(:disabled):hover{background:#3d7de0}
 .search-btn svg{width:14px;height:14px;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinning{animation:spin .8s linear infinite}
 
-/* ── FILTERS ── */
+/* FILTERS */
 .filters{padding:10px 14px 0;display:flex;gap:7px;flex-wrap:wrap}
-.chip{
-  background:var(--bg2);border:1px solid var(--border);
-  color:var(--text3);font-size:12px;padding:5px 11px;
-  border-radius:20px;cursor:pointer;transition:all .15s;
-  user-select:none;white-space:nowrap;
-}
+.chip{background:var(--bg2);border:1px solid var(--border);color:var(--text3);font-size:12px;padding:5px 11px;border-radius:20px;cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap}
 .chip.active{background:#1a2d4a;border-color:var(--accent);color:var(--accent)}
 .chip:hover:not(.active){border-color:var(--border2);color:var(--text2)}
 
-/* ── HISTORY BAR ── */
+/* HISTORY BAR */
 .history-bar{padding:10px 14px 0}
 .history-label{font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
 .history-chips{display:flex;gap:6px;flex-wrap:wrap}
-.h-chip{
-  background:var(--bg1);border:1px solid var(--border);
-  color:var(--text3);font-size:12px;padding:4px 10px;
-  border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:5px;
-  transition:all .15s;
-}
+.h-chip{background:var(--bg1);border:1px solid var(--border);color:var(--text3);font-size:12px;padding:4px 10px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s}
 .h-chip:hover{border-color:var(--border2);color:var(--text2)}
 .h-del{color:var(--border2);font-size:14px;line-height:1;transition:color .15s}
 .h-del:hover{color:var(--red)}
 
-/* ── RESULTS ── */
+/* RESULTS */
 .results{padding:14px}
-
-.info-card{
-  background:#1a2433;border:1px solid #2a3a4a;
-  border-radius:12px;padding:14px;margin-bottom:14px;
-  display:flex;gap:10px;
-}
+.info-card{background:#1a2433;border:1px solid #2a3a4a;border-radius:12px;padding:14px;margin-bottom:14px;display:flex;gap:10px}
 .info-card .i-icon{font-size:18px;flex-shrink:0;margin-top:1px}
 .info-card .i-text{font-size:13px;color:var(--text3);line-height:1.6}
 .info-card .i-text strong{color:var(--text2)}
-
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .stat-box{background:var(--bg1);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center}
 .stat-num{font-size:22px;font-weight:700}
 .stat-lbl{font-size:11px;color:var(--text4);margin-top:2px}
 
-/* result cards */
-.r-card{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:12px;padding:14px;margin-bottom:11px;
-  border-left:3px solid var(--border);transition:border-color .2s;
-}
+/* RESULT CARDS */
+.r-card{background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:11px;border-left:3px solid var(--border);transition:border-color .2s}
 .r-card.yes{border-left-color:var(--green)}
 .r-card.partial{border-left-color:var(--orange)}
 .r-card.no{border-left-color:var(--red)}
 .r-card:hover{border-color:var(--border2)}
-
 .r-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .r-model{font-size:15px;font-weight:700;color:var(--text1)}
 .r-brand{font-size:11px;color:var(--text3);background:var(--bg2);padding:3px 8px;border-radius:6px;margin-top:3px;display:inline-block}
-.status-pill{
-  display:flex;align-items:center;gap:4px;
-  font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px;flex-shrink:0;
-}
+.status-pill{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px;flex-shrink:0}
 .status-pill.yes{background:var(--green-bg);color:var(--green)}
 .status-pill.partial{background:var(--orange-bg);color:var(--orange)}
 .status-pill.no{background:var(--red-bg);color:var(--red)}
 .status-pill.unknown{background:var(--bg2);color:var(--text3)}
-
 .tools-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
 .t-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:filter .15s}
 a.t-tag:hover{filter:brightness(1.35)}
@@ -212,86 +120,118 @@ a.t-tag:hover{filter:brightness(1.35)}
 .t-tag.chimera{background:#1a2a2d;color:#4dd0e1;border:1px solid #1a3a3d}
 .t-tag.sigma{background:#2a1a2a;color:#f48fb1;border:1px solid #3a1a3a}
 .t-tag.other{background:var(--bg2);color:var(--text3);border:1px solid var(--border)}
-
 .r-android{font-size:12px;color:var(--text3);margin-bottom:7px;display:flex;align-items:center;gap:5px}
 .r-android::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;flex-shrink:0}
-.r-notes{
-  font-size:12px;color:var(--text4);line-height:1.5;
-  border-top:1px solid var(--border);padding-top:8px;margin-top:4px;
-}
+.r-notes{font-size:12px;color:var(--text4);line-height:1.5;border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
 .r-notes strong{color:var(--text3)}
 .r-conf{font-size:10px;margin-top:8px;opacity:.7}
 
-/* loading */
+/* PRICE ESTIMATE */
+.r-price{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--text3)}
+.price-badge{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:12px;font-weight:600}
+.price-badge.easy{color:#4caf50;border-color:#2d7a4f}
+.price-badge.medium{color:#ff9800;border-color:#7a5020}
+.price-badge.hard{color:#ef5350;border-color:#7a2020}
+
+/* CACHE BADGE */
+.cache-badge{font-size:10px;background:#1a2d1a;color:#66bb6a;border:1px solid #2d5a2d;padding:2px 7px;border-radius:5px;margin-left:auto;flex-shrink:0}
+
+/* LOADING */
 .loading{text-align:center;padding:40px 16px}
 .spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
 .loading-t{color:var(--text3);font-size:13px}
 .loading-s{color:var(--text4);font-size:12px;margin-top:6px;line-height:1.5}
 
-/* empty */
+/* EMPTY */
 .empty{text-align:center;padding:40px 20px}
 .empty-i{font-size:40px;margin-bottom:12px;opacity:.35}
 .empty-t{font-size:14px;color:var(--text3)}
 .empty-s{font-size:12px;color:var(--text4);margin-top:6px;line-height:1.5}
 
-/* footer */
+/* FOOTER */
 .src-footer{font-size:11px;color:var(--text4);text-align:center;padding:4px 0 8px}
 
-/* ── HISTORIAL TAB ── */
+/* HISTORIAL TAB */
 .h-full{padding:14px}
-.h-entry{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:10px;padding:12px 14px;margin-bottom:9px;
-  cursor:pointer;transition:border-color .15s;
-}
+.h-entry{background:var(--bg1);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:9px;cursor:pointer;transition:border-color .15s}
 .h-entry:hover{border-color:var(--border2)}
 .h-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .h-query{font-size:14px;color:var(--text1);font-weight:500}
 .h-date{font-size:11px;color:var(--text4);flex-shrink:0}
 .h-res{font-size:12px;color:var(--text4);margin-top:5px;line-height:1.5}
-.clear-btn{
-  background:var(--bg2);border:1px solid var(--border);color:var(--text4);
-  font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;
-  margin-bottom:14px;transition:all .15s;
-}
+.h-device{font-size:10px;color:var(--text4);margin-top:3px}
+.clear-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text4);font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;margin-bottom:14px;transition:all .15s}
 .clear-btn:hover{border-color:var(--red);color:var(--red)}
+.sync-status{font-size:11px;color:var(--text4);text-align:center;padding:6px;margin-bottom:10px}
+.sync-status.ok{color:var(--green)}
+.sync-status.err{color:var(--red)}
 
-/* ── HERRAMIENTAS TAB ── */
+/* LOTE TAB */
+.lote-tab{padding:14px}
+.lote-desc{font-size:13px;color:var(--text3);margin-bottom:12px;line-height:1.6}
+.lote-textarea{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;color:var(--text1);font-size:13px;padding:12px;resize:none;outline:none;font-family:inherit;line-height:1.6;transition:border-color .2s;min-height:130px}
+.lote-textarea:focus{border-color:var(--accent)}
+.lote-textarea::placeholder{color:var(--text4)}
+.lote-options{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:13px;color:var(--text3)}
+.lote-options input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px}
+.lote-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
+.lote-btn:disabled{opacity:.4;cursor:not-allowed}
+.lote-btn:not(:disabled):hover{background:#3d7de0}
+.lote-progress{font-size:12px;color:var(--text3);text-align:center;padding:8px 0;margin-bottom:4px}
+.lote-results{margin-top:14px}
+.batch-model-header{font-size:12px;color:var(--text4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;margin-top:14px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+/* HERRAMIENTAS TAB */
 .tools-tab{padding:14px}
 .tools-desc{font-size:13px;color:var(--text3);margin-bottom:14px;line-height:1.6}
 .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tool-card{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:11px;padding:13px 12px;
-}
+.tool-card{background:var(--bg1);border:1px solid var(--border);border-radius:11px;padding:13px 12px}
 .tool-card-icon{font-size:20px;margin-bottom:6px}
 .tool-card-name{font-size:13px;font-weight:600;color:var(--text1);margin-bottom:3px}
 .tool-card-desc{font-size:11px;color:var(--text4);line-height:1.5}
-.tool-card-brand{
-  font-size:10px;color:var(--text4);
-  background:var(--bg2);display:inline-block;
-  padding:2px 7px;border-radius:5px;margin-top:6px;
-}
+.tool-card-brand{font-size:10px;color:var(--text4);background:var(--bg2);display:inline-block;padding:2px 7px;border-radius:5px;margin-top:6px}
 
-/* ── ACERCA DE ── */
+/* ACERCA */
 .about-tab{padding:14px}
-.about-card{
-  background:var(--bg1);border:1px solid var(--border);
-  border-radius:12px;padding:16px;margin-bottom:12px;
-}
+.about-card{background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
 .about-title{font-size:14px;font-weight:600;color:var(--text1);margin-bottom:8px;display:flex;align-items:center;gap:7px}
 .about-body{font-size:13px;color:var(--text3);line-height:1.7}
 .version-badge{background:var(--bg2);border:1px solid var(--border);color:var(--accent);font-size:12px;padding:4px 10px;border-radius:6px;display:inline-block;margin-top:8px}
 
-/* responsive desktop */
+/* SETTINGS MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;overflow-y:auto;padding:16px}
+.modal-overlay.open{display:block}
+.modal-box{background:var(--bg1);max-width:500px;margin:0 auto;border-radius:16px;padding:20px;border:1px solid var(--border2)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700;color:var(--text1)}
+.modal-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;transition:color .15s}
+.modal-close:hover{color:var(--red)}
+.modal-section{margin-bottom:22px}
+.modal-section-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.modal-field{margin-bottom:12px}
+.modal-field label{display:block;font-size:12px;color:var(--text3);margin-bottom:5px}
+.modal-input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text1);padding:9px 11px;border-radius:8px;font-size:13px;outline:none;transition:border-color .2s;font-family:inherit}
+.modal-input:focus{border-color:var(--accent)}
+.modal-input::placeholder{color:var(--text4)}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sql-block{background:var(--bg0);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:10px;color:var(--accent);line-height:1.7;margin-bottom:12px;font-family:monospace;white-space:pre-wrap}
+.modal-save-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+.modal-save-btn:hover{background:#3d7de0}
+.modal-note{font-size:11px;color:var(--text4);line-height:1.6;margin-bottom:12px}
+.sb-status{font-size:12px;margin-top:8px;padding:6px 10px;border-radius:6px;display:none}
+.sb-status.ok{background:var(--green-bg);color:var(--green);display:block}
+.sb-status.err{background:var(--red-bg);color:var(--red);display:block}
+
+/* RESPONSIVE */
 @media(min-width:600px){
   .header{padding:14px 24px}
-  .search-wrap{padding:18px 20px 0}
+  .search-wrap,.lote-tab{padding:18px 20px 0}
   .filters{padding:12px 20px 0}
   .results,.h-full,.tools-tab,.about-tab{padding:18px 20px}
   .history-bar{padding:12px 20px 0}
   .tools-grid{grid-template-columns:repeat(3,1fr)}
   #searchInput{font-size:16px}
+  .lote-tab{padding:18px 20px}
 }
 </style>
 </head>
@@ -310,26 +250,20 @@ a.t-tag:hover{filter:brightness(1.35)}
       <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 16l-4-4h2.5V4h3v8H16l-4 4z"/><path d="M4 18h16"/></svg>
       Instalar
     </button>
+    <button class="gear-btn" onclick="openSettings()" title="Configuración">⚙️</button>
   </div>
 </div>
 
 <!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="setTab('buscar',this)">
-    <span class="tab-icon">🔍</span>Buscar
-  </div>
-  <div class="tab" onclick="setTab('historial',this)">
-    <span class="tab-icon">🕓</span>Historial
-  </div>
-  <div class="tab" onclick="setTab('herramientas',this)">
-    <span class="tab-icon">🛠</span>Tools
-  </div>
-  <div class="tab" onclick="setTab('acerca',this)">
-    <span class="tab-icon">ℹ️</span>Acerca
-  </div>
+  <div class="tab active" onclick="setTab('buscar',this)"><span class="tab-icon">🔍</span>Buscar</div>
+  <div class="tab" onclick="setTab('lote',this)"><span class="tab-icon">📋</span>Lote</div>
+  <div class="tab" onclick="setTab('historial',this)"><span class="tab-icon">🕓</span>Historial</div>
+  <div class="tab" onclick="setTab('herramientas',this)"><span class="tab-icon">🛠</span>Tools</div>
+  <div class="tab" onclick="setTab('acerca',this)"><span class="tab-icon">ℹ️</span>Acerca</div>
 </div>
 
-<!-- ══════════ TAB: BUSCAR ══════════ -->
+<!-- TAB: BUSCAR -->
 <div id="tab-buscar" class="scroll">
   <div class="search-wrap">
     <div class="search-box">
@@ -341,7 +275,6 @@ a.t-tag:hover{filter:brightness(1.35)}
       </button>
     </div>
   </div>
-
   <div class="filters">
     <span class="chip active" onclick="setFilter('',this)">Todas</span>
     <span class="chip" onclick="setFilter('Samsung',this)">Samsung</span>
@@ -354,17 +287,15 @@ a.t-tag:hover{filter:brightness(1.35)}
     <span class="chip" onclick="setFilter('Tecno',this)">Tecno</span>
     <span class="chip" onclick="setFilter('TCL',this)">TCL</span>
   </div>
-
   <div id="history-bar" class="history-bar" style="display:none">
     <div class="history-label">Recientes</div>
     <div class="history-chips" id="historyChips"></div>
   </div>
-
   <div class="results" id="resultsArea">
     <div class="info-card">
       <div class="i-icon">💡</div>
       <div class="i-text">
-        Escribí el modelo del celular que te ofrecen para saber si tiene solución FRP disponible.<br>
+        Escribí el modelo del celular para saber si tiene solución FRP disponible.<br>
         <strong>Herramientas:</strong> Octoplus · SamFw · UMT · Pandora · NCK · Chimera · SigmaPlus
       </div>
     </div>
@@ -376,12 +307,30 @@ a.t-tag:hover{filter:brightness(1.35)}
   </div>
 </div>
 
-<!-- ══════════ TAB: HISTORIAL ══════════ -->
+<!-- TAB: LOTE -->
+<div id="tab-lote" class="scroll" style="display:none">
+  <div class="lote-tab">
+    <div class="lote-desc">Pegá una lista de modelos para verificar todos juntos. Útil cuando te llegan varias unidades.</div>
+    <textarea id="loteInput" class="lote-textarea" placeholder="Un modelo por línea o separados por comas:&#10;Samsung A12&#10;Moto G22&#10;SM-A225M, SM-A225F, SM-A225N&#10;Xiaomi Redmi 9A"></textarea>
+    <div class="lote-options">
+      <input type="checkbox" id="variantesCheck" checked>
+      <label for="variantesCheck">Incluir variantes regionales (M, F, N, G...)</label>
+    </div>
+    <button class="lote-btn" id="loteBtn" onclick="doBatch()">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="16" height="16"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      <span id="loteBtnTxt">Buscar todo</span>
+    </button>
+    <div id="loteProgress" class="lote-progress" style="display:none"></div>
+    <div id="loteResults" class="lote-results"></div>
+  </div>
+</div>
+
+<!-- TAB: HISTORIAL -->
 <div id="tab-historial" class="scroll" style="display:none">
   <div class="h-full" id="histFull"></div>
 </div>
 
-<!-- ══════════ TAB: HERRAMIENTAS ══════════ -->
+<!-- TAB: HERRAMIENTAS -->
 <div id="tab-herramientas" class="scroll" style="display:none">
   <div class="tools-tab">
     <div class="tools-desc">Tu arsenal de herramientas detectado. La búsqueda consulta compatibilidad FRP con cada una.</div>
@@ -389,7 +338,7 @@ a.t-tag:hover{filter:brightness(1.35)}
   </div>
 </div>
 
-<!-- ══════════ TAB: ACERCA ══════════ -->
+<!-- TAB: ACERCA -->
 <div id="tab-acerca" class="scroll" style="display:none">
   <div class="about-tab">
     <div class="about-card">
@@ -398,18 +347,20 @@ a.t-tag:hover{filter:brightness(1.35)}
         App para verificar en tiempo real si un celular tiene solución de desbloqueo FRP disponible con tus herramientas actuales.<br><br>
         Ideal para compra y venta de celulares: consultá un modelo antes de comprarlo para saber si tiene solución o no.
       </div>
-      <div class="version-badge">v1.0.0</div>
+      <div class="version-badge">v2.0.0</div>
     </div>
     <div class="about-card">
       <div class="about-title">🛠 Herramientas soportadas</div>
-      <div class="about-body">
-        Octoplus FRP Tool · SamFw Tool · UMT / UMTv2 · Pandora Tool · NCK Box · NCK Dongle · Chimera Tool · SigmaPlus · 3uTools · Unisoc Module
-      </div>
+      <div class="about-body">Octoplus FRP Tool · SamFw Tool · UMT / UMTv2 · Pandora Tool · NCK Box · NCK Dongle · Chimera Tool · SigmaPlus · 3uTools · Unisoc Module</div>
     </div>
     <div class="about-card">
-      <div class="about-title">🔄 Tiempo real</div>
+      <div class="about-title">🔄 Novedades v2.0</div>
       <div class="about-body">
-        Cada consulta usa inteligencia artificial con búsqueda web activa para obtener info actualizada. No depende de bases de datos estáticas que se desactualizan.
+        ✅ Caché de resultados (respuestas instantáneas en repeticiones)<br>
+        ✅ Búsqueda por lote con variantes regionales<br>
+        ✅ Precio estimado por trabajo<br>
+        ✅ Historial sincronizado en la nube (configurable)<br><br>
+        Configurá todo desde el ⚙️ en la esquina superior derecha.
       </div>
     </div>
     <div class="about-card">
@@ -422,10 +373,78 @@ a.t-tag:hover{filter:brightness(1.35)}
   </div>
 </div>
 
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal-overlay" onclick="handleModalClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ Configuración</div>
+      <button class="modal-close" onclick="closeSettings()">×</button>
+    </div>
+
+    <!-- PRECIOS -->
+    <div class="modal-section">
+      <div class="modal-section-title">💰 Precios estimados por trabajo</div>
+      <div class="modal-field">
+        <label>Moneda (ej: ARS, USD, EUR)</label>
+        <input id="cfgCurrency" class="modal-input" type="text" placeholder="ARS" maxlength="5">
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Fácil (herramienta directa)</label>
+          <input id="cfgEasy" class="modal-input" type="text" placeholder="500-1000">
+        </div>
+        <div class="modal-field">
+          <label>Medio (herramienta alternativa)</label>
+          <input id="cfgMed" class="modal-input" type="text" placeholder="1000-2000">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Difícil (requiere investigación)</label>
+          <input id="cfgHard" class="modal-input" type="text" placeholder="2000-4000">
+        </div>
+        <div class="modal-field">
+          <label>Sin solución</label>
+          <input id="cfgNone" class="modal-input" type="text" placeholder="No aplica">
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPABASE -->
+    <div class="modal-section">
+      <div class="modal-section-title">☁️ Historial en la nube (Supabase)</div>
+      <div class="modal-note">
+        Creá un proyecto gratuito en <strong>supabase.com</strong>, ejecutá este SQL en el editor y pegá los datos acá. El historial se sincronizará entre todos tus dispositivos.
+      </div>
+      <div class="sql-block">CREATE TABLE searches (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  device_id TEXT,
+  query TEXT NOT NULL,
+  result TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE searches DISABLE ROW LEVEL SECURITY;</div>
+      <div class="modal-field">
+        <label>Project URL (ej: https://xxxx.supabase.co)</label>
+        <input id="cfgSbUrl" class="modal-input" type="text" placeholder="https://xxxx.supabase.co">
+      </div>
+      <div class="modal-field">
+        <label>Anon / Public Key</label>
+        <input id="cfgSbKey" class="modal-input" type="text" placeholder="eyJhbGci...">
+      </div>
+      <div id="sbTestStatus" class="sb-status"></div>
+    </div>
+
+    <button class="modal-save-btn" onclick="saveSettings()">Guardar configuración</button>
+  </div>
+</div>
+
 <script>
 'use strict';
 
-// ── DATA ──
+// ── CONSTANTS ──
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
+
 const TOOLS_DATA = [
   {name:'Octoplus FRP', key:'octoplus', icon:'🔵', desc:'Samsung, LG, Huawei – USB/ADB', brand:'Multi'},
   {name:'SamFw Tool',   key:'samfw',    icon:'🟢', desc:'Samsung exclusivo – FRP/firmware', brand:'Samsung'},
@@ -437,64 +456,132 @@ const TOOLS_DATA = [
   {name:'3uTools',      key:'other',    icon:'⚪', desc:'Info y utilidades iOS/Android', brand:'Multi'},
 ];
 
-const TOOL_NAMES = {
-  octoplus:'Octoplus', samfw:'SamFw', umt:'UMT',
-  pandora:'Pandora', nck:'NCK Box', chimera:'Chimera',
-  sigma:'SigmaPlus', other:'Otra'
-};
+const TOOL_NAMES = {octoplus:'Octoplus', samfw:'SamFw', umt:'UMT', pandora:'Pandora', nck:'NCK Box', chimera:'Chimera', sigma:'SigmaPlus', other:'Otra'};
+const TOOL_SEARCH = {octoplus:'Octoplus FRP Tool', samfw:'SamFw Tool', umt:'UMT UMTv2', pandora:'Pandora Tool', nck:'NCK Box', chimera:'Chimera Tool', sigma:'SigmaPlus', other:''};
 
-// nombre completo usado para armar la búsqueda en Google al clicar el tag
-const TOOL_SEARCH = {
-  octoplus:'Octoplus FRP Tool', samfw:'SamFw Tool', umt:'UMT UMTv2',
-  pandora:'Pandora Tool', nck:'NCK Box', chimera:'Chimera Tool',
-  sigma:'SigmaPlus', other:''
-};
-
+// ── STATE ──
 let history = [];
 let stats = {total:0, ok:0, no:0};
 let currentFilter = '';
 let deferredPrompt = null;
+let isBatchRunning = false;
 
 try { history = JSON.parse(localStorage.getItem('frp_history')||'[]'); } catch(e){}
 try { stats   = JSON.parse(localStorage.getItem('frp_stats')||'{"total":0,"ok":0,"no":0}'); } catch(e){}
 
+// ── PRICES CONFIG ──
+let priceConfig = {currency:'ARS', easy:'500-1000', medium:'1000-2000', hard:'2000-4000', none:'No aplica'};
+try {
+  const saved = JSON.parse(localStorage.getItem('frp_prices'));
+  if(saved) priceConfig = Object.assign(priceConfig, saved);
+} catch(e){}
+
+// ── SUPABASE CONFIG ──
+let sbConfig = {url:'', key:''};
+try {
+  const saved = JSON.parse(localStorage.getItem('frp_supabase'));
+  if(saved) sbConfig = Object.assign(sbConfig, saved);
+} catch(e){}
+
+// ── DEVICE ID ──
+function getDeviceId(){
+  let id = localStorage.getItem('frp_device_id');
+  if(!id){ id = 'dev_'+Math.random().toString(36).substr(2,9)+Date.now().toString(36); localStorage.setItem('frp_device_id', id); }
+  return id;
+}
+
+// ── CACHE ──
+function getCached(query){
+  try{
+    const cache = JSON.parse(localStorage.getItem('frp_cache')||'{}');
+    const entry = cache[query.toLowerCase().trim()];
+    if(entry && (Date.now()-entry.ts) < CACHE_TTL) return entry.data;
+  }catch(e){}
+  return null;
+}
+
+function setCache(query, data){
+  try{
+    const cache = JSON.parse(localStorage.getItem('frp_cache')||'{}');
+    cache[query.toLowerCase().trim()] = {data, ts:Date.now()};
+    const keys = Object.keys(cache);
+    if(keys.length > 300){
+      keys.sort((a,b)=>cache[a].ts-cache[b].ts).slice(0, keys.length-300).forEach(k=>delete cache[k]);
+    }
+    localStorage.setItem('frp_cache', JSON.stringify(cache));
+  }catch(e){}
+}
+
+// ── PRICE ESTIMATE ──
+function getPriceEstimate(status, confidence){
+  if(status==='no') return {label:'Sin solución', range:priceConfig.none, cls:'hard', icon:'❌'};
+  if(status==='yes' && confidence==='high') return {label:'Fácil', range:priceConfig.easy, cls:'easy', icon:'✅'};
+  if(status==='yes' || status==='partial') return {label:'Medio', range:priceConfig.medium, cls:'medium', icon:'⚠️'};
+  return {label:'Difícil', range:priceConfig.hard, cls:'hard', icon:'🔧'};
+}
+
+// ── SUPABASE ──
+async function syncToSupabase(query, result){
+  if(!sbConfig.url || !sbConfig.key) return;
+  try{
+    await fetch(sbConfig.url+'/rest/v1/searches', {
+      method:'POST',
+      headers:{'apikey':sbConfig.key,'Authorization':'Bearer '+sbConfig.key,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({device_id:getDeviceId(), query, result})
+    });
+  }catch(e){}
+}
+
+async function loadFromSupabase(){
+  if(!sbConfig.url || !sbConfig.key) return null;
+  try{
+    const res = await fetch(sbConfig.url+'/rest/v1/searches?order=created_at.desc&limit=100', {
+      headers:{'apikey':sbConfig.key,'Authorization':'Bearer '+sbConfig.key}
+    });
+    if(!res.ok) return null;
+    const rows = await res.json();
+    return rows.map(r=>({
+      query: r.query,
+      result: r.result||'',
+      date: r.created_at ? new Date(r.created_at).toLocaleDateString('es-AR') : '—',
+      device: r.device_id||'',
+      fromCloud: true
+    }));
+  }catch(e){ return null; }
+}
+
+async function testSupabase(url, key){
+  try{
+    const res = await fetch(url+'/rest/v1/searches?limit=1', {
+      headers:{'apikey':key,'Authorization':'Bearer '+key}
+    });
+    return res.ok;
+  }catch(e){ return false; }
+}
+
 // ── SERVICE WORKER ──
 if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
-  });
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
 
 // ── INSTALL ──
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault(); deferredPrompt = e;
   document.getElementById('installBtn').style.display = 'flex';
 });
-window.addEventListener('appinstalled', () => {
-  document.getElementById('installBtn').style.display = 'none';
-  deferredPrompt = null;
+window.addEventListener('appinstalled', ()=>{
+  document.getElementById('installBtn').style.display = 'none'; deferredPrompt = null;
 });
-function installApp(){
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(()=>{ deferredPrompt = null; });
-}
+function installApp(){ if(!deferredPrompt) return; deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{ deferredPrompt=null; }); }
 
 // ── ONLINE STATUS ──
 function updateOnline(){
   const lbl = document.getElementById('onlineLabel');
   const pill = document.querySelector('.online-pill');
   if(navigator.onLine){
-    lbl.textContent = 'En línea';
-    pill.style.background = 'var(--green-bg)';
-    pill.style.borderColor = '#2d7a4f';
-    pill.style.color = 'var(--green)';
+    lbl.textContent='En línea'; pill.style.background='var(--green-bg)'; pill.style.borderColor='#2d7a4f'; pill.style.color='var(--green)';
   } else {
-    lbl.textContent = 'Sin internet';
-    pill.style.background = 'var(--red-bg)';
-    pill.style.borderColor = '#6a2a2a';
-    pill.style.color = 'var(--red)';
+    lbl.textContent='Sin internet'; pill.style.background='var(--red-bg)'; pill.style.borderColor='#6a2a2a'; pill.style.color='var(--red)';
   }
 }
 window.addEventListener('online', updateOnline);
@@ -505,14 +592,14 @@ updateOnline();
 function setTab(name, el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  ['buscar','historial','herramientas','acerca'].forEach(id=>{
-    document.getElementById('tab-'+id).style.display = id===name ? 'flex' : 'none';
-    if(id===name) document.getElementById('tab-'+id).style.flexDirection = 'column';
+  ['buscar','lote','historial','herramientas','acerca'].forEach(id=>{
+    const t = document.getElementById('tab-'+id);
+    t.style.display = id===name ? 'flex' : 'none';
+    if(id===name) t.style.flexDirection = 'column';
   });
   if(name==='historial') renderHistFull();
   if(name==='herramientas') renderTools();
 }
-// set initial
 document.getElementById('tab-buscar').style.display='flex';
 document.getElementById('tab-buscar').style.flexDirection='column';
 
@@ -539,30 +626,53 @@ function renderHistBar(){
     </span>`).join('');
 }
 function removeHist(i){ history.splice(i,1); saveHistory(); renderHistBar(); }
-function searchFrom(q){ document.getElementById('searchInput').value=q; doSearch(); }
+function searchFrom(q){ document.getElementById('searchInput').value=q; setTab('buscar', document.querySelector('.tab')); doSearch(); }
 
-function renderHistFull(){
+async function renderHistFull(){
   const el = document.getElementById('histFull');
-  if(!history.length){
-    el.innerHTML='<div class="empty"><div class="empty-i">🕓</div><div class="empty-t">Sin búsquedas guardadas</div><div class="empty-s">Las consultas aparecerán acá</div></div>';
+  let cloudEntries = null;
+
+  if(sbConfig.url && sbConfig.key){
+    el.innerHTML = '<div class="sync-status">☁️ Cargando historial desde la nube...</div>';
+    cloudEntries = await loadFromSupabase();
+  }
+
+  const localEntries = history.map(h=>({...h, fromCloud:false}));
+  const allEntries = cloudEntries ? cloudEntries : localEntries;
+  const syncMsg = cloudEntries
+    ? `<div class="sync-status ok">☁️ Sincronizado — ${allEntries.length} búsquedas</div>`
+    : sbConfig.url ? `<div class="sync-status err">⚠️ No se pudo conectar con Supabase</div>` : '';
+
+  if(!allEntries.length){
+    el.innerHTML = syncMsg + '<div class="empty"><div class="empty-i">🕓</div><div class="empty-t">Sin búsquedas guardadas</div><div class="empty-s">Las consultas aparecerán acá</div></div>';
     return;
   }
-  el.innerHTML = `<button class="clear-btn" onclick="clearAll()">🗑 Borrar todo el historial</button>` +
-    history.map((h,i)=>`
+
+  const myDevice = getDeviceId();
+  el.innerHTML = syncMsg +
+    `<button class="clear-btn" onclick="clearAll()">🗑 Borrar historial local</button>` +
+    allEntries.map(h=>`
       <div class="h-entry" onclick="searchFrom('${escHtml(h.query)}')">
         <div class="h-row">
           <span class="h-query">${escHtml(h.query)}</span>
-          <span class="h-date">${h.date}</span>
+          <span class="h-date">${h.date||'—'}</span>
         </div>
         <div class="h-res">${escHtml(h.result||'—')}</div>
+        ${h.fromCloud && h.device && h.device!==myDevice ? `<div class="h-device">📱 Otro dispositivo</div>` : ''}
       </div>`).join('');
 }
-function clearAll(){ if(confirm('¿Borrar todo el historial?')){ history=[]; saveHistory(); renderHistFull(); renderHistBar(); } }
+
+function clearAll(){
+  if(confirm('¿Borrar historial local?')){ history=[]; saveHistory(); renderHistFull(); renderHistBar(); }
+}
 
 function renderStats(){
-  document.getElementById('sTot').textContent = stats.total || '—';
-  document.getElementById('sOk').textContent  = stats.ok   || '—';
-  document.getElementById('sNo').textContent  = stats.no   || '—';
+  const tot = document.getElementById('sTot');
+  const ok  = document.getElementById('sOk');
+  const no  = document.getElementById('sNo');
+  if(tot) tot.textContent = stats.total || '—';
+  if(ok)  ok.textContent  = stats.ok   || '—';
+  if(no)  no.textContent  = stats.no   || '—';
 }
 
 function renderTools(){
@@ -575,7 +685,29 @@ function renderTools(){
     </div>`).join('');
 }
 
-// ── SEARCH ──
+// ── API CALL ──
+async function callAPI(query){
+  const res = await fetch('/api/check', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({query})
+  });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.error || `API error ${res.status}`);
+  return data.content || '';
+}
+
+function parseResults(raw, fallbackModel, fallbackBrand){
+  let results = [];
+  const match = raw.match(/\[[\s\S]*\]/);
+  if(match){ try{ results = JSON.parse(match[0]); }catch(e){} }
+  if(!Array.isArray(results) || !results.length){
+    results = [{model:fallbackModel, brand:fallbackBrand||'Desconocida', status:'unknown', tools:[], android:'—', notes:'Sin información específica. Intentá con el número de modelo exacto.', confidence:'low'}];
+  }
+  return results;
+}
+
+// ── SEARCH (individual) ──
 let isSearching = false;
 
 async function doSearch(){
@@ -584,7 +716,7 @@ async function doSearch(){
   if(!raw) return;
 
   isSearching = true;
-  const btn = document.getElementById('searchBtn');
+  const btn  = document.getElementById('searchBtn');
   const icon = document.getElementById('searchBtnIcon');
   const txt  = document.getElementById('searchBtnTxt');
   btn.disabled = true;
@@ -593,6 +725,17 @@ async function doSearch(){
   txt.textContent = 'Buscando';
 
   const query = currentFilter ? `${currentFilter} ${raw}` : raw;
+  const cached = getCached(query);
+
+  if(cached){
+    renderResults(cached, true);
+    isSearching = false;
+    btn.disabled = false;
+    icon.classList.remove('spinning');
+    icon.innerHTML = '<path d="M5 12h14M12 5l7 7-7 7"/>';
+    txt.textContent = 'Buscar';
+    return;
+  }
 
   document.getElementById('resultsArea').innerHTML = `
     <div class="loading">
@@ -601,38 +744,17 @@ async function doSearch(){
       <div class="loading-s">Octoplus · SamFw · UMT · Pandora · NCK · Chimera · SigmaPlus</div>
     </div>`;
 
-  try {
-    const res = await fetch('/api/check', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ query })
-    });
+  try{
+    const fullText = await callAPI(query);
+    const results = parseResults(fullText, raw, currentFilter);
 
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.error || `API error ${res.status}`);
-    const fullText = data.content || '';
+    setCache(query, results);
 
-    let results = [];
-    const match = fullText.match(/\[[\s\S]*\]/);
-    if(match){
-      try { results = JSON.parse(match[0]); } catch(e){}
-    }
-    if(!Array.isArray(results) || !results.length){
-      results = [{
-        model: raw, brand: currentFilter||'Desconocida',
-        status:'unknown', tools:[], android:'—',
-        notes:'Sin información específica. Intentá con el número de modelo exacto.',
-        confidence:'low'
-      }];
-    }
-
-    // update stats
     stats.total += results.length;
     stats.ok    += results.filter(r=>r.status==='yes').length;
     stats.no    += results.filter(r=>r.status==='no').length;
     saveStats();
 
-    // save history
     const summary = results.map(r=>{
       const s = r.status==='yes'?'✅':r.status==='partial'?'⚠️':r.status==='no'?'❌':'❓';
       return `${r.model}: ${s}`;
@@ -642,14 +764,14 @@ async function doSearch(){
     saveHistory();
     renderHistBar();
 
-    renderResults(results);
+    syncToSupabase(raw, summary);
+    renderResults(results, false);
 
-  } catch(err){
+  }catch(err){
     document.getElementById('resultsArea').innerHTML = `
       <div class="info-card" style="border-color:#3a1a1a;background:#1a1010">
         <div class="i-icon">⚠️</div>
-        <div class="i-text">
-          Error al consultar. Verificá tu conexión a internet.<br>
+        <div class="i-text">Error al consultar. Verificá tu conexión.<br>
           <span style="color:var(--text4);font-size:11px">${escHtml(err.message)}</span>
         </div>
       </div>`;
@@ -663,7 +785,93 @@ async function doSearch(){
   renderStats();
 }
 
-function renderResults(results){
+// ── BATCH SEARCH ──
+function parseBatchInput(text){
+  return text
+    .split(/[\n,]+/)
+    .map(s=>s.trim())
+    .filter(s=>s.length > 0);
+}
+
+async function doBatch(){
+  if(isBatchRunning) return;
+  const raw = document.getElementById('loteInput').value.trim();
+  if(!raw) return;
+
+  const withVariants = document.getElementById('variantesCheck').checked;
+  const models = parseBatchInput(raw);
+  if(!models.length) return;
+
+  isBatchRunning = true;
+  const btn = document.getElementById('loteBtn');
+  const btnTxt = document.getElementById('loteBtnTxt');
+  btn.disabled = true;
+  btnTxt.textContent = 'Procesando...';
+
+  const progress = document.getElementById('loteProgress');
+  const resultsEl = document.getElementById('loteResults');
+  progress.style.display = 'block';
+  resultsEl.innerHTML = '';
+
+  let allCards = '';
+
+  for(let i = 0; i < models.length; i++){
+    const model = models[i];
+    progress.textContent = `Procesando ${i+1} de ${models.length}: ${model}`;
+
+    const variantNote = withVariants ? ' Incluí todas las variantes regionales (M, F, N, G, etc.)' : '';
+    const query = model + variantNote;
+    const cached = getCached(query);
+    let results;
+    let fromCache = false;
+
+    if(cached){
+      results = cached;
+      fromCache = true;
+    } else {
+      try{
+        const fullText = await callAPI(query);
+        results = parseResults(fullText, model, '');
+        setCache(query, results);
+        // small delay to avoid rate limiting
+        if(i < models.length-1) await new Promise(r=>setTimeout(r, 600));
+      }catch(err){
+        results = [{model, brand:'Error', status:'unknown', tools:[], android:'—', notes:err.message, confidence:'low'}];
+      }
+    }
+
+    // update stats
+    stats.total += results.length;
+    stats.ok    += results.filter(r=>r.status==='yes').length;
+    stats.no    += results.filter(r=>r.status==='no').length;
+    saveStats();
+
+    const summary = results.map(r=>{
+      const s = r.status==='yes'?'✅':r.status==='partial'?'⚠️':r.status==='no'?'❌':'❓';
+      return `${r.model}: ${s}`;
+    }).join(' | ');
+    history.unshift({query:model, date:new Date().toLocaleDateString('es-AR'), result:summary});
+    if(history.length>30) history.pop();
+    saveHistory();
+    syncToSupabase(model, summary);
+
+    allCards += `<div class="batch-model-header">Modelo ${i+1}: ${escHtml(model)}${fromCache?' ⚡':''}</div>`;
+    allCards += buildCards(results, fromCache);
+    resultsEl.innerHTML = allCards;
+  }
+
+  saveHistory();
+  renderHistBar();
+  renderStats();
+
+  progress.textContent = `✅ Completado: ${models.length} modelo${models.length>1?'s':''} procesado${models.length>1?'s':''}`;
+  isBatchRunning = false;
+  btn.disabled = false;
+  btnTxt.textContent = 'Buscar todo';
+}
+
+// ── RENDER RESULTS ──
+function renderResults(results, fromCache){
   const statsHtml = `
     <div class="stats-row">
       <div class="stat-box"><div id="sTot" class="stat-num" style="color:var(--accent)">${stats.total||'—'}</div><div class="stat-lbl">Consultados</div></div>
@@ -671,22 +879,30 @@ function renderResults(results){
       <div class="stat-box"><div id="sNo" class="stat-num" style="color:var(--red)">${stats.no||'—'}</div><div class="stat-lbl">Sin solución</div></div>
     </div>`;
 
-  const cards = results.map(r=>{
+  document.getElementById('resultsArea').innerHTML =
+    statsHtml +
+    buildCards(results, fromCache) +
+    `<div class="src-footer">${fromCache?'⚡ Resultado desde caché':'Actualizado en tiempo real'} · ${new Date().toLocaleString('es-AR')}</div>`;
+}
+
+function buildCards(results, fromCache){
+  return results.map(r=>{
     const sc = r.status==='yes'?'yes':r.status==='partial'?'partial':r.status==='no'?'no':'unknown';
     const sl = r.status==='yes'?'✅ Desbloqueable':r.status==='partial'?'⚠️ Parcial':r.status==='no'?'❌ Sin solución':'❓ Sin datos';
     const cc = r.confidence==='high'?'var(--green)':r.confidence==='medium'?'var(--orange)':'var(--red)';
     const cl = r.confidence==='high'?'Alta':r.confidence==='medium'?'Media':'Baja';
+    const price = getPriceEstimate(r.status, r.confidence);
     const toolTags = (r.tools||[]).map(t=>{
       const tool = TOOL_SEARCH[t]||TOOL_NAMES[t]||t;
       const q = encodeURIComponent(`${r.model||''} FRP ${tool} bypass`.trim());
-      const url = `https://www.google.com/search?q=${q}`;
-      return `<a class="t-tag ${t}" href="${url}" target="_blank" rel="noopener" title="Ver datos de FRP de ${escHtml(r.model||'')} con ${escHtml(tool)}">${TOOL_NAMES[t]||t}</a>`;
+      return `<a class="t-tag ${t}" href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">${TOOL_NAMES[t]||t}</a>`;
     }).join('');
+
     return `
       <div class="r-card ${sc}">
         <div class="r-head">
           <div>
-            <div class="r-model">${escHtml(r.model||'Modelo desconocido')}</div>
+            <div class="r-model">${escHtml(r.model||'Modelo desconocido')}${fromCache?'<span class="cache-badge">⚡ caché</span>':''}</div>
             <span class="r-brand">${escHtml(r.brand||'—')}</span>
           </div>
           <div class="status-pill ${sc}">${sl}</div>
@@ -695,23 +911,77 @@ function renderResults(results){
         <div class="r-android">Android: ${escHtml(r.android||'Sin datos')}</div>
         ${r.notes ? `<div class="r-notes"><strong>ℹ️</strong> ${escHtml(r.notes)}</div>` : ''}
         <div class="r-conf" style="color:${cc}">Confianza: ${cl}</div>
+        <div class="r-price">
+          <span>💰 Precio estimado:</span>
+          <span class="price-badge ${price.cls}">${price.icon} ${price.label} — ${priceConfig.currency} ${price.range}</span>
+        </div>
       </div>`;
   }).join('');
-
-  document.getElementById('resultsArea').innerHTML =
-    statsHtml + cards +
-    `<div class="src-footer">Actualizado en tiempo real · ${new Date().toLocaleString('es-AR')}</div>`;
 }
 
+// ── SETTINGS MODAL ──
+function openSettings(){
+  document.getElementById('cfgCurrency').value = priceConfig.currency;
+  document.getElementById('cfgEasy').value = priceConfig.easy;
+  document.getElementById('cfgMed').value  = priceConfig.medium;
+  document.getElementById('cfgHard').value = priceConfig.hard;
+  document.getElementById('cfgNone').value = priceConfig.none;
+  document.getElementById('cfgSbUrl').value = sbConfig.url;
+  document.getElementById('cfgSbKey').value = sbConfig.key;
+  document.getElementById('sbTestStatus').className = 'sb-status';
+  document.getElementById('sbTestStatus').textContent = '';
+  document.getElementById('settingsModal').classList.add('open');
+}
+
+function closeSettings(){
+  document.getElementById('settingsModal').classList.remove('open');
+}
+
+function handleModalClick(e){
+  if(e.target === document.getElementById('settingsModal')) closeSettings();
+}
+
+async function saveSettings(){
+  priceConfig = {
+    currency: document.getElementById('cfgCurrency').value.trim() || 'ARS',
+    easy:     document.getElementById('cfgEasy').value.trim() || '500-1000',
+    medium:   document.getElementById('cfgMed').value.trim()  || '1000-2000',
+    hard:     document.getElementById('cfgHard').value.trim() || '2000-4000',
+    none:     document.getElementById('cfgNone').value.trim() || 'No aplica',
+  };
+  localStorage.setItem('frp_prices', JSON.stringify(priceConfig));
+
+  const newUrl = document.getElementById('cfgSbUrl').value.trim().replace(/\/$/, '');
+  const newKey = document.getElementById('cfgSbKey').value.trim();
+
+  if(newUrl && newKey){
+    const statusEl = document.getElementById('sbTestStatus');
+    statusEl.className = 'sb-status'; statusEl.textContent = '⏳ Verificando conexión...'; statusEl.style.display='block';
+    const ok = await testSupabase(newUrl, newKey);
+    if(ok){
+      statusEl.className = 'sb-status ok'; statusEl.textContent = '✅ Conexión exitosa con Supabase';
+      sbConfig = {url:newUrl, key:newKey};
+      localStorage.setItem('frp_supabase', JSON.stringify(sbConfig));
+    } else {
+      statusEl.className = 'sb-status err'; statusEl.textContent = '❌ No se pudo conectar. Verificá la URL y la key';
+      return;
+    }
+  } else {
+    sbConfig = {url:'', key:''};
+    localStorage.removeItem('frp_supabase');
+  }
+
+  setTimeout(closeSettings, newUrl && newKey ? 1500 : 0);
+}
+
+// ── UTILS ──
 function escHtml(s){
   if(!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ── KEYBOARD ──
-document.getElementById('searchInput').addEventListener('keydown', e=>{
-  if(e.key==='Enter') doSearch();
-});
+document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
 
 // ── INIT ──
 renderHistBar();
