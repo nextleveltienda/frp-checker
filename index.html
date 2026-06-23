@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192x192.png">
 <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-<title>FRP Checker Pro</title>h
+<title>FRP Checker Pro</title>hh
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -659,7 +659,7 @@ Reglas importantes:
     const fullText = data.choices[0].message.content;
 
     let results = [];
-    const match = fullText.match(/\[[\s\S]*?\]/);
+    const match = fullText.match(/\[[\s\S]*\]/);
     if(match){
       try { results = JSON.parse(match[0]); } catch(e){}
     }
