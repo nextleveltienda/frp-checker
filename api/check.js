@@ -46,7 +46,7 @@ Reglas importantes:
 - Si mencionan número de modelo exacto (SM-A225M etc) usalo en el campo model
 - Confianza "high" para Samsung/Motorola/LG, "medium" para Xiaomi/Huawei, "low" para modelos muy nuevos`;
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Método no permitido' });
     return;
