@@ -103,6 +103,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .calc-toggle .gm{font-size:11px;font-weight:600;color:var(--text4);padding:5px 9px;border-radius:6px;cursor:pointer}
 .calc-toggle .gm.active{background:var(--accent);color:#fff}
 .calc-result{margin-top:20px}
+/* EXPERIENCIA PROPIA */
+.own-banner{display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(74,124,240,.1);border:1px solid var(--accent);border-radius:10px;padding:10px 13px;margin-bottom:10px;font-size:12.5px;color:var(--text1)}
+.own-banner.no{background:rgba(230,70,70,.08);border-color:var(--red)}
+.own-banner a{color:var(--text4);font-size:11px;flex-shrink:0}
+.own-btns{display:flex;gap:8px;margin-top:11px;padding-top:11px;border-top:1px solid var(--border)}
+.own-btn{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:11.5px;font-weight:600;padding:8px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.own-btn.yes:hover{background:rgba(60,180,120,.15);color:var(--green);border-color:var(--green)}
+.own-btn.no:hover{background:rgba(230,70,70,.15);color:var(--red);border-color:var(--red)}
 
 /* FILTERS */
 .filters{padding:10px 14px 0;display:flex;gap:7px;flex-wrap:wrap}
@@ -824,7 +832,7 @@ async function doSearch(){
   const cached = getCached(query);
 
   if(cached){
-    renderResults(cached, true);
+    renderResults(cached, true, detectPartsQuery(raw) ? partsHintHtml(raw) : '', raw);
     isSearching = false;
     btn.disabled = false;
     icon.classList.remove('spinning');
@@ -863,7 +871,7 @@ async function doSearch(){
     renderHistBar();
 
     syncToSupabase(raw, summary);
-    renderResults(results, false, partsHint ? partsHintHtml(raw) : '');
+    renderResults(results, false, partsHint ? partsHintHtml(raw) : '', raw);
 
   }catch(err){
     document.getElementById('resultsArea').innerHTML =
@@ -950,7 +958,7 @@ async function doBatch(){
     syncToSupabase(model, summary);
 
     allCards += `<div class="batch-model-header">Modelo ${i+1}: ${escHtml(model)}${fromCache?' ⚡':''}</div>`;
-    allCards += buildCards(results, fromCache);
+    allCards += buildCards(results, fromCache, model);
     resultsEl.innerHTML = allCards;
   }
 
@@ -976,8 +984,31 @@ function partsHintHtml(q){
   </div>`;
 }
 
+// ── EXPERIENCIA PROPIA ── (pesa más que cualquier fuente automática)
+function ownKey(q){ return 'frp_own_' + (q||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'_'); }
+function getOwnVerdict(q){ if(!q) return null; try{ return JSON.parse(localStorage.getItem(ownKey(q))); }catch(e){ return null; } }
+let lastRender = {};
+function markOwn(query, worked, tool){
+  const rec = {worked, tool: tool||'', date:new Date().toLocaleDateString('es-AR')};
+  try{ localStorage.setItem(ownKey(query), JSON.stringify(rec)); }catch(e){}
+  if(lastRender.query===query) renderResults(lastRender.results, lastRender.fromCache, lastRender.hintHtml, query);
+}
+function clearOwn(query){
+  try{ localStorage.removeItem(ownKey(query)); }catch(e){}
+  if(lastRender.query===query) renderResults(lastRender.results, lastRender.fromCache, lastRender.hintHtml, query);
+}
+function ownBannerHtml(query, own){
+  const icon = own.worked ? '✅' : '❌';
+  const txt = own.worked ? `Lo desbloqueaste${own.tool?` con ${escHtml(own.tool)}`:''}` : `No funcionó${own.tool?` con ${escHtml(own.tool)}`:''}`;
+  return `<div class="own-banner ${own.worked?'yes':'no'}">
+    <span>${icon} <strong>Según tu experiencia:</strong> ${txt} · ${own.date}</span>
+    <a href="#" onclick="clearOwn(${JSON.stringify(query)});return false">borrar</a>
+  </div>`;
+}
+
 // ── RENDER RESULTS ──
-function renderResults(results, fromCache, hintHtml){
+function renderResults(results, fromCache, hintHtml, query){
+  lastRender = {results, fromCache, hintHtml, query};
   const statsHtml = `
     <div class="stats-row">
       <div class="stat-box"><div id="sTot" class="stat-num" style="color:var(--accent)">${stats.total||'—'}</div><div class="stat-lbl">Consultados</div></div>
@@ -985,22 +1016,30 @@ function renderResults(results, fromCache, hintHtml){
       <div class="stat-box"><div id="sNo" class="stat-num" style="color:var(--red)">${stats.no||'—'}</div><div class="stat-lbl">Sin solución</div></div>
     </div>`;
   const noteHtml = results._note ? `<div class="calc-hint" style="margin:8px 2px">⚠️ ${escHtml(results._note)}</div>` : '';
+  const own = getOwnVerdict(query);
+  const ownHtml = own ? ownBannerHtml(query, own) : '';
 
   document.getElementById('resultsArea').innerHTML =
     (hintHtml||'') +
+    ownHtml +
     statsHtml +
     noteHtml +
-    buildCards(results, fromCache) +
+    buildCards(results, fromCache, query) +
     `<div class="src-footer">${fromCache?'⚡ Resultado desde caché':'Fuentes consultadas en tiempo real'} · ${new Date().toLocaleString('es-AR')}</div>`;
 }
 
-function buildCards(results, fromCache){
+function buildCards(results, fromCache, query){
   return results.map(r=>{
     const sc = r.status==='yes'?'yes':r.status==='partial'?'partial':'no';
     const sl = r.status==='yes'?'✅ Confirmado':r.status==='partial'?'⚠️ Probable':'❌ Sin evidencia';
     const cc = r.confidence==='high'?'var(--green)':r.confidence==='medium'?'var(--orange)':'var(--red)';
     const cl = r.confidence==='high'?'Alta':r.confidence==='medium'?'Media':'Baja';
     const link = r.url ? `<a class="t-tag chimera" href="${r.url}" target="_blank" rel="noopener">📎 Ver en ${escHtml(r.tool)}</a>` : '';
+    const ownBtns = query ? `
+        <div class="own-btns">
+          <button class="own-btn yes" onclick="markOwn(${JSON.stringify(query)}, true, ${JSON.stringify(r.tool||'')})">✅ Lo desbloqueé</button>
+          <button class="own-btn no" onclick="markOwn(${JSON.stringify(query)}, false, ${JSON.stringify(r.tool||'')})">❌ No funcionó</button>
+        </div>` : '';
 
     return `
       <div class="r-card ${sc}">
@@ -1014,6 +1053,7 @@ function buildCards(results, fromCache){
         ${link ? `<div class="tools-row">${link}</div>` : ''}
         ${r.notes ? `<div class="r-notes"><strong>ℹ️</strong> ${escHtml(r.notes)}</div>` : ''}
         <div class="r-conf" style="color:${cc}">Confianza: ${cl}</div>
+        ${ownBtns}
       </div>`;
   }).join('');
 }
