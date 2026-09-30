@@ -336,8 +336,8 @@ a.t-tag:hover{filter:brightness(1.35)}
     <div class="info-card">
       <div class="i-icon">💡</div>
       <div class="i-text">
-        Escribí el modelo del celular para saber si tiene solución FRP disponible.<br>
-        <strong>Herramientas:</strong> Octoplus · SamFw · UMT · Pandora · NCK · Chimera · SigmaPlus
+        Escribí el modelo del celular para saber si tiene solución FRP confirmada.<br>
+        <strong>Fuentes verificadas:</strong> Chimera · UnlockTool · Griffin-Unlocker
       </div>
     </div>
     <div class="stats-row">
@@ -439,16 +439,17 @@ a.t-tag:hover{filter:brightness(1.35)}
       <div class="version-badge">v2.0.0</div>
     </div>
     <div class="about-card">
-      <div class="about-title">🛠 Herramientas soportadas</div>
-      <div class="about-body">Octoplus FRP Tool · SamFw Tool · UMT / UMTv2 · Pandora Tool · NCK Box · NCK Dongle · Chimera Tool · SigmaPlus · 3uTools · Unisoc Module</div>
+      <div class="about-title">🛠 Fuentes de FRP verificadas</div>
+      <div class="about-body">Chimera Tool (ficha oficial por modelo) · UnlockTool (base pública de modelos) · Griffin-Unlocker (matriz de soporte). Cada resultado enlaza a la fuente real, no es una estimación de IA.</div>
     </div>
     <div class="about-card">
-      <div class="about-title">🔄 Novedades v2.0</div>
+      <div class="about-title">🔄 Novedades v3.0</div>
       <div class="about-body">
-        ✅ Caché de resultados (respuestas instantáneas en repeticiones)<br>
-        ✅ Búsqueda por lote con variantes regionales<br>
-        ✅ Precio estimado por trabajo<br>
-        ✅ Historial sincronizado en la nube (configurable)<br><br>
+        ✅ Verificador de FRP contra fuentes reales, con link a cada una<br>
+        ✅ Comparador de repuestos en 3 tiendas (Técnico Cerca, Mundo Parts, El Búnker)<br>
+        ✅ Calculadora de precio máximo de compra<br>
+        ✅ Búsqueda por voz<br>
+        ✅ Caché de resultados · Historial sincronizado en la nube (configurable)<br><br>
         Configurá todo desde el ⚙️ en la esquina superior derecha.
       </div>
     </div>
@@ -535,17 +536,10 @@ ALTER TABLE searches DISABLE ROW LEVEL SECURITY;</div>
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 const TOOLS_DATA = [
-  {name:'Octoplus FRP', key:'octoplus', icon:'🔵', desc:'Samsung, LG, Huawei – USB/ADB', brand:'Multi'},
-  {name:'SamFw Tool',   key:'samfw',    icon:'🟢', desc:'Samsung exclusivo – FRP/firmware', brand:'Samsung'},
-  {name:'UMT / UMTv2', key:'umt',      icon:'🟣', desc:'MTK, Qualcomm, Unisoc multi', brand:'Multi'},
-  {name:'Pandora Tool', key:'pandora',  icon:'🟡', desc:'Samsung, Motorola, LG', brand:'Multi'},
-  {name:'NCK Box',      key:'nck',      icon:'🟠', desc:'MTK, Samsung, LG, Alcatel', brand:'Multi'},
-  {name:'Chimera',      key:'chimera',  icon:'🔷', desc:'Samsung, Nokia, LG', brand:'Multi'},
-  {name:'SigmaPlus',    key:'sigma',    icon:'🩷', desc:'MTK, Unisoc, Qualcomm', brand:'Multi'},
-  {name:'3uTools',      key:'other',    icon:'⚪', desc:'Info y utilidades iOS/Android', brand:'Multi'},
+  {name:'Chimera Tool', key:'chimera', icon:'🔷', desc:'Ficha oficial por modelo — dato explícito de "Remove FRP"', brand:'chimeratool.com'},
+  {name:'UnlockTool',   key:'unlocktool', icon:'🟣', desc:'Base pública de ~3.500 modelos con operaciones por unidad', brand:'unlocktool.org'},
+  {name:'Griffin-Unlocker', key:'griffin', icon:'🔥', desc:'Matriz de ~2.200 modelos reconocidos', brand:'griffin-unlocker.com'},
 ];
-
-const TOOL_NAMES = {octoplus:'Octoplus', samfw:'SamFw', umt:'UMT', pandora:'Pandora', nck:'NCK Box', chimera:'Chimera', sigma:'SigmaPlus', other:'Otra'};
 const TOOL_SEARCH = {octoplus:'Octoplus FRP Tool', samfw:'SamFw Tool', umt:'UMT UMTv2', pandora:'Pandora Tool', nck:'NCK Box', chimera:'Chimera Tool', sigma:'SigmaPlus', other:''};
 
 // ── STATE ──
@@ -775,25 +769,38 @@ function renderTools(){
 }
 
 // ── API CALL ──
-async function callAPI(query){
-  const res = await fetch('/api/check', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({query})
-  });
+// Verificador real: sin IA. Consulta Chimera, UnlockTool y Griffin-Unlocker
+// (las bases públicas de cada herramienta) y arma un veredicto por fuente.
+async function callFrpAPI(query){
+  const res = await fetch('/api/frp?q='+encodeURIComponent(query));
   const data = await res.json();
   if(!res.ok) throw new Error(data.error || `API error ${res.status}`);
-  return data.content || '';
+  return data;
 }
 
-function parseResults(raw, fallbackModel, fallbackBrand){
-  let results = [];
-  const match = raw.match(/\[[\s\S]*\]/);
-  if(match){ try{ results = JSON.parse(match[0]); }catch(e){} }
-  if(!Array.isArray(results) || !results.length){
-    results = [{model:fallbackModel, brand:fallbackBrand||'Desconocida', status:'unknown', tools:[], android:'—', notes:'Sin información específica. Intentá con el número de modelo exacto.', confidence:'low'}];
+const TOOL_LINK = {Chimera:'https://chimeratool.com/en/models', UnlockTool:'https://www.unlocktool.org/supported-models', 'Griffin-Unlocker':'https://griffin-unlocker.com/models.html'};
+
+// Convierte la respuesta de /api/frp en tarjetas (una por variante de modelo encontrada).
+function mapFrpResponse(data, fallbackQuery){
+  const toRow = (r, status) => ({
+    model: r.model || fallbackQuery, code: r.code || '', status, tool: r.tool, url: r.url,
+    notes: status==='yes'
+      ? `Confirmado por ${r.tool}${r.modes&&r.modes.length?' — '+r.modes.join(', '):''}`
+      : `${r.tool} reconoce este modelo, pero no lista "Remove FRP" explícito en su ficha. Puede funcionar; confirmalo antes de comprar.`,
+    confidence: status==='yes' ? 'high' : 'medium',
+  });
+  const rows = [
+    ...data.confirmedFrp.map(r=>toRow(r,'yes')),
+    ...data.listedOnly.map(r=>toRow(r,'partial')),
+  ];
+  if(!rows.length){
+    rows.push({
+      model: fallbackQuery, code:'', status:'no', tool:null, url:null,
+      notes:'No aparece en Chimera, UnlockTool ni Griffin-Unlocker. Sin evidencia de solución FRP para este modelo — antes de comprarlo, verificalo a mano en un grupo de técnicos.',
+      confidence:'low',
+    });
   }
-  return results;
+  return rows;
 }
 
 // ── SEARCH (individual) ──
@@ -826,38 +833,41 @@ async function doSearch(){
     return;
   }
 
-  document.getElementById('resultsArea').innerHTML = `
+  const partsHint = detectPartsQuery(raw);
+
+  document.getElementById('resultsArea').innerHTML =
+    (partsHint ? partsHintHtml(raw) : '') + `
     <div class="loading">
       <div class="spinner"></div>
-      <div class="loading-t">Consultando fuentes en tiempo real...</div>
-      <div class="loading-s">Octoplus · SamFw · UMT · Pandora · NCK · Chimera · SigmaPlus</div>
+      <div class="loading-t">Consultando fuentes reales...</div>
+      <div class="loading-s">Chimera · UnlockTool · Griffin-Unlocker</div>
     </div>`;
 
   try{
-    const fullText = await callAPI(query);
-    const results = parseResults(fullText, raw, currentFilter);
+    const data = await callFrpAPI(query);
+    const results = mapFrpResponse(data, raw);
+    results._note = data.note;
 
     setCache(query, results);
 
-    stats.total += results.length;
-    stats.ok    += results.filter(r=>r.status==='yes').length;
-    stats.no    += results.filter(r=>r.status==='no').length;
+    const overall = data.verdict==='confirmado'?'yes':data.verdict==='probable'?'partial':'no';
+    stats.total += 1;
+    stats.ok    += overall==='yes' ? 1 : 0;
+    stats.no    += overall==='no'  ? 1 : 0;
     saveStats();
 
-    const summary = results.map(r=>{
-      const s = r.status==='yes'?'✅':r.status==='partial'?'⚠️':r.status==='no'?'❌':'❓';
-      return `${r.model}: ${s}`;
-    }).join(' | ');
+    const summary = `${raw}: ${overall==='yes'?'✅':overall==='partial'?'⚠️':'❌'}`;
     history.unshift({query:raw, date:new Date().toLocaleDateString('es-AR'), result:summary});
     if(history.length>30) history.pop();
     saveHistory();
     renderHistBar();
 
     syncToSupabase(raw, summary);
-    renderResults(results, false);
+    renderResults(results, false, partsHint ? partsHintHtml(raw) : '');
 
   }catch(err){
-    document.getElementById('resultsArea').innerHTML = `
+    document.getElementById('resultsArea').innerHTML =
+      (partsHint ? partsHintHtml(raw) : '') + `
       <div class="info-card" style="border-color:#3a1a1a;background:#1a1010">
         <div class="i-icon">⚠️</div>
         <div class="i-text">Error al consultar. Verificá tu conexión.<br>
@@ -887,7 +897,6 @@ async function doBatch(){
   const raw = document.getElementById('loteInput').value.trim();
   if(!raw) return;
 
-  const withVariants = document.getElementById('variantesCheck').checked;
   const models = parseBatchInput(raw);
   if(!models.length) return;
 
@@ -908,37 +917,33 @@ async function doBatch(){
     const model = models[i];
     progress.textContent = `Procesando ${i+1} de ${models.length}: ${model}`;
 
-    const variantNote = withVariants ? ' Incluí todas las variantes regionales (M, F, N, G, etc.)' : '';
-    const query = model + variantNote;
-    const cached = getCached(query);
-    let results;
+    const cached = getCached(model);
+    let results, overall;
     let fromCache = false;
 
     if(cached){
       results = cached;
       fromCache = true;
+      overall = results.some(r=>r.status==='yes') ? 'yes' : results.some(r=>r.status==='partial') ? 'partial' : 'no';
     } else {
       try{
-        const fullText = await callAPI(query);
-        results = parseResults(fullText, model, '');
-        setCache(query, results);
-        // small delay to avoid rate limiting
-        if(i < models.length-1) await new Promise(r=>setTimeout(r, 600));
+        const data = await callFrpAPI(model);
+        results = mapFrpResponse(data, model);
+        overall = data.verdict==='confirmado'?'yes':data.verdict==='probable'?'partial':'no';
+        setCache(model, results);
       }catch(err){
-        results = [{model, brand:'Error', status:'unknown', tools:[], android:'—', notes:err.message, confidence:'low'}];
+        results = [{model, code:'', status:'no', tool:null, url:null, notes:err.message, confidence:'low'}];
+        overall = 'no';
       }
     }
 
     // update stats
-    stats.total += results.length;
-    stats.ok    += results.filter(r=>r.status==='yes').length;
-    stats.no    += results.filter(r=>r.status==='no').length;
+    stats.total += 1;
+    stats.ok    += overall==='yes' ? 1 : 0;
+    stats.no    += overall==='no'  ? 1 : 0;
     saveStats();
 
-    const summary = results.map(r=>{
-      const s = r.status==='yes'?'✅':r.status==='partial'?'⚠️':r.status==='no'?'❌':'❓';
-      return `${r.model}: ${s}`;
-    }).join(' | ');
+    const summary = `${model}: ${overall==='yes'?'✅':overall==='partial'?'⚠️':'❌'}`;
     history.unshift({query:model, date:new Date().toLocaleDateString('es-AR'), result:summary});
     if(history.length>30) history.pop();
     saveHistory();
@@ -959,51 +964,56 @@ async function doBatch(){
   btnTxt.textContent = 'Buscar todo';
 }
 
+// ── DETECTOR: consulta de repuesto tipeada por error en la pestaña de FRP ──
+const PARTS_WORDS = /\b(modulo|módulo|pantalla|display|bateria|batería|pin de carga|placa de carga|tapa|marco|camara|cámara|oled|incell|glass|parlante|microfono|micrófono)\b/i;
+function detectPartsQuery(q){ return PARTS_WORDS.test(q); }
+function partsHintHtml(q){
+  return `<div class="info-card" style="border-color:#3a2a10;background:#1a140a;margin-bottom:10px">
+    <div class="i-icon">🧩</div>
+    <div class="i-text">Esto parece una búsqueda de <strong>repuesto</strong>, no de desbloqueo FRP.
+      <a href="#" onclick="document.getElementById('partsInput').value=${JSON.stringify(q)};setTab('repuestos',document.querySelectorAll('.tab')[1]);doParts();return false" style="color:var(--accent)">Buscarlo en Repuestos →</a>
+    </div>
+  </div>`;
+}
+
 // ── RENDER RESULTS ──
-function renderResults(results, fromCache){
+function renderResults(results, fromCache, hintHtml){
   const statsHtml = `
     <div class="stats-row">
       <div class="stat-box"><div id="sTot" class="stat-num" style="color:var(--accent)">${stats.total||'—'}</div><div class="stat-lbl">Consultados</div></div>
       <div class="stat-box"><div id="sOk" class="stat-num" style="color:var(--green)">${stats.ok||'—'}</div><div class="stat-lbl">Desbloqueables</div></div>
       <div class="stat-box"><div id="sNo" class="stat-num" style="color:var(--red)">${stats.no||'—'}</div><div class="stat-lbl">Sin solución</div></div>
     </div>`;
+  const noteHtml = results._note ? `<div class="calc-hint" style="margin:8px 2px">⚠️ ${escHtml(results._note)}</div>` : '';
 
   document.getElementById('resultsArea').innerHTML =
+    (hintHtml||'') +
     statsHtml +
+    noteHtml +
     buildCards(results, fromCache) +
-    `<div class="src-footer">${fromCache?'⚡ Resultado desde caché':'Actualizado en tiempo real'} · ${new Date().toLocaleString('es-AR')}</div>`;
+    `<div class="src-footer">${fromCache?'⚡ Resultado desde caché':'Fuentes consultadas en tiempo real'} · ${new Date().toLocaleString('es-AR')}</div>`;
 }
 
 function buildCards(results, fromCache){
   return results.map(r=>{
-    const sc = r.status==='yes'?'yes':r.status==='partial'?'partial':r.status==='no'?'no':'unknown';
-    const sl = r.status==='yes'?'✅ Desbloqueable':r.status==='partial'?'⚠️ Parcial':r.status==='no'?'❌ Sin solución':'❓ Sin datos';
+    const sc = r.status==='yes'?'yes':r.status==='partial'?'partial':'no';
+    const sl = r.status==='yes'?'✅ Confirmado':r.status==='partial'?'⚠️ Probable':'❌ Sin evidencia';
     const cc = r.confidence==='high'?'var(--green)':r.confidence==='medium'?'var(--orange)':'var(--red)';
     const cl = r.confidence==='high'?'Alta':r.confidence==='medium'?'Media':'Baja';
-    const price = getPriceEstimate(r.status, r.confidence);
-    const toolTags = (r.tools||[]).map(t=>{
-      const tool = TOOL_SEARCH[t]||TOOL_NAMES[t]||t;
-      const q = encodeURIComponent(`${r.model||''} FRP ${tool} bypass`.trim());
-      return `<a class="t-tag ${t}" href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">${TOOL_NAMES[t]||t}</a>`;
-    }).join('');
+    const link = r.url ? `<a class="t-tag chimera" href="${r.url}" target="_blank" rel="noopener">📎 Ver en ${escHtml(r.tool)}</a>` : '';
 
     return `
       <div class="r-card ${sc}">
         <div class="r-head">
           <div>
             <div class="r-model">${escHtml(r.model||'Modelo desconocido')}${fromCache?'<span class="cache-badge">⚡ caché</span>':''}</div>
-            <span class="r-brand">${escHtml(r.brand||'—')}</span>
+            ${r.code ? `<span class="r-brand">${escHtml(r.code)}</span>` : ''}
           </div>
           <div class="status-pill ${sc}">${sl}</div>
         </div>
-        ${toolTags ? `<div class="tools-row">${toolTags}</div>` : ''}
-        <div class="r-android">Android: ${escHtml(r.android||'Sin datos')}</div>
+        ${link ? `<div class="tools-row">${link}</div>` : ''}
         ${r.notes ? `<div class="r-notes"><strong>ℹ️</strong> ${escHtml(r.notes)}</div>` : ''}
         <div class="r-conf" style="color:${cc}">Confianza: ${cl}</div>
-        <div class="r-price">
-          <span>💰 Precio estimado:</span>
-          <span class="price-badge ${price.cls}">${price.icon} ${price.label} — ${priceConfig.currency} ${price.range}</span>
-        </div>
       </div>`;
   }).join('');
 }

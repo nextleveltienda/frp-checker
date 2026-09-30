@@ -1,4 +1,8 @@
 {
+  "functions": {
+    "api/frp.js": { "maxDuration": 30 },
+    "api/parts.js": { "maxDuration": 20 }
+  },
   "headers": [
     {
       "source": "/api/(.*)",
