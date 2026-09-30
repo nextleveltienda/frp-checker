@@ -979,7 +979,7 @@ function partsHintHtml(q){
   return `<div class="info-card" style="border-color:#3a2a10;background:#1a140a;margin-bottom:10px">
     <div class="i-icon">🧩</div>
     <div class="i-text">Esto parece una búsqueda de <strong>repuesto</strong>, no de desbloqueo FRP.
-      <a href="#" onclick="document.getElementById('partsInput').value=${JSON.stringify(q)};setTab('repuestos',document.querySelectorAll('.tab')[1]);doParts();return false" style="color:var(--accent)">Buscarlo en Repuestos →</a>
+      <a href="#" onclick="document.getElementById('partsInput').value=${jsStr(q)};setTab('repuestos',document.querySelectorAll('.tab')[1]);doParts();return false" style="color:var(--accent)">Buscarlo en Repuestos →</a>
     </div>
   </div>`;
 }
@@ -1002,7 +1002,7 @@ function ownBannerHtml(query, own){
   const txt = own.worked ? `Lo desbloqueaste${own.tool?` con ${escHtml(own.tool)}`:''}` : `No funcionó${own.tool?` con ${escHtml(own.tool)}`:''}`;
   return `<div class="own-banner ${own.worked?'yes':'no'}">
     <span>${icon} <strong>Según tu experiencia:</strong> ${txt} · ${own.date}</span>
-    <a href="#" onclick="clearOwn(${JSON.stringify(query)});return false">borrar</a>
+    <a href="#" onclick="clearOwn(${jsStr(query)});return false">borrar</a>
   </div>`;
 }
 
@@ -1037,8 +1037,8 @@ function buildCards(results, fromCache, query){
     const link = r.url ? `<a class="t-tag chimera" href="${r.url}" target="_blank" rel="noopener">📎 Ver en ${escHtml(r.tool)}</a>` : '';
     const ownBtns = query ? `
         <div class="own-btns">
-          <button class="own-btn yes" onclick="markOwn(${JSON.stringify(query)}, true, ${JSON.stringify(r.tool||'')})">✅ Lo desbloqueé</button>
-          <button class="own-btn no" onclick="markOwn(${JSON.stringify(query)}, false, ${JSON.stringify(r.tool||'')})">❌ No funcionó</button>
+          <button class="own-btn yes" onclick="markOwn(${jsStr(query)}, true, ${jsStr(r.tool||'')})">✅ Lo desbloqueé</button>
+          <button class="own-btn no" onclick="markOwn(${jsStr(query)}, false, ${jsStr(r.tool||'')})">❌ No funcionó</button>
         </div>` : '';
 
     return `
@@ -1117,6 +1117,11 @@ async function saveSettings(){
 function escHtml(s){
   if(!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+// String literal JS seguro para meter dentro de un atributo onclick="..." (comillas dobles).
+// JSON.stringify usa comillas dobles y rompería el atributo; esto usa comillas simples escapadas.
+function jsStr(s){
+  return "'" + String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/</g,'\\x3c') + "'";
 }
 
 // ── KEYBOARD ──
