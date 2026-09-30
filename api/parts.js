@@ -115,6 +115,47 @@ async function fetchSection(sheet, gid) {
   return items;
 }
 
+// ── El Búnker (pedix) ──
+// El catálogo entero (nombre, precio, categoría, activo) viene embebido en el HTML
+// de cualquier página de categoría. Una sola descarga trae todo.
+const BUNKER_URL = 'https://pedix.app/onthegobunkercor/categoria/Tz9zIhUW5Oe1aKeK9jWQ';
+
+async function fetchBunker() {
+  const key = 'bunker';
+  const hit = mem[key];
+  if (hit && Date.now() - hit.t < CACHE_MS) return hit.v;
+  let html = null, lastErr;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await fetch(BUNKER_URL, { headers: UA });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      html = await r.text();
+      break;
+    } catch (e) { lastErr = e; await new Promise(s => setTimeout(s, 400)); }
+  }
+  if (html == null) throw lastErr || new Error('fetch failed');
+  // Mapa id de categoría → nombre.
+  const cats = {};
+  for (const m of html.matchAll(/"id":"([A-Za-z0-9]{12,})","name":"([^"]{2,40})"(?=,"slug"|,"description"|,"active"|,"products")/g))
+    cats[m[1]] = m[2];
+  // Cada producto arranca con {"id":"..","categoryId":".."
+  const items = [];
+  const chunks = html.split(/\{"id":"[A-Za-z0-9]{12,}","categoryId":"/);
+  for (let i = 1; i < chunks.length; i++) {
+    const o = chunks[i];
+    const cid = o.slice(0, o.indexOf('"'));
+    const nm = o.match(/"name":"([^"]{1,90})"/);
+    const pr = o.match(/"price":(\d+)/);
+    const ac = o.match(/"active":(true|false)/);
+    if (!nm || !pr) continue;
+    const price = parseInt(pr[1], 10);
+    if (!price) continue;
+    items.push({ desc: nm[1], price, section: cats[cid] || 'otros', active: !ac || ac[1] === 'true' });
+  }
+  mem[key] = { t: Date.now(), v: items };
+  return items;
+}
+
 // ── Análisis de la consulta ──
 const PART_ALIASES = {
   modulo: ['modulo', 'módulo', 'pantalla', 'display', 'lcd', 'glass', 'visor'],
@@ -172,8 +213,30 @@ module.exports = async function handler(req, res) {
 
   const results = [];
   const errors = [];
-  await Promise.all(STORES.map(async store => {
-    // Secciones equivalentes por si una tienda nombra distinto la misma categoría.
+
+  // Un item pasa el filtro de tipo de repuesto si su descripción o su sección lo indican.
+  const partOK = (desc, section) => {
+    if (!a.part) return true;
+    const hay = (' ' + (desc + ' ' + section).toLowerCase() + ' ');
+    return (PART_ALIASES[a.part] || [a.part]).some(al => hay.includes(al));
+  };
+  const consider = (storeName, section, desc, price, sinStock) => {
+    if (!a.modelTokens.every(t => tokenMatches(desc, t))) return;
+    if (!partOK(desc, section)) return;
+    const q2 = qualityOf(desc);
+    if (a.wantQual.length) {
+      const wantsPanel = a.wantQual.filter(w => w === 'oled' || w === 'incell');
+      if (wantsPanel.length && !wantsPanel.some(w => q2.has(w))) return;
+      if (a.wantQual.includes('oled') && q2.has('incell')) return;
+      if (a.wantQual.includes('incell') && q2.has('oled')) return;
+    }
+    results.push({ store: storeName, section, desc, price, quality: [...q2], sinStock });
+  };
+
+  const jobs = [];
+
+  // Tiendas en Google Sheets.
+  for (const store of STORES) {
     const EQUIV = { 'pin de carga': ['pin de carga', 'placa de carga', 'partes chicas'] };
     let picked = null;
     if (a.part) {
@@ -182,28 +245,18 @@ module.exports = async function handler(req, res) {
     }
     const gids = picked || Object.entries(store.sections);
     for (const [secName, gid] of gids) {
-      try {
-        const items = await fetchSection(store.sheet, gid);
-        for (const it of items) {
-          if (!a.modelTokens.every(t => tokenMatches(it.desc, t))) continue;
-          const q2 = qualityOf(it.desc);
-          // Si el usuario pidió calidad, exigirla; si pidió otra excluyente, descartar.
-          if (a.wantQual.length) {
-            const wantsPanel = a.wantQual.filter(w => w === 'oled' || w === 'incell');
-            if (wantsPanel.length && !wantsPanel.some(w => q2.has(w))) continue;
-            // no mezclar oled con incell
-            if (a.wantQual.includes('oled') && q2.has('incell')) continue;
-            if (a.wantQual.includes('incell') && q2.has('oled')) continue;
-          }
-          const sinStock = /sin stock/i.test(it.desc);
-          results.push({
-            store: store.name, section: secName, desc: it.desc, price: it.price,
-            quality: [...q2], sinStock,
-          });
-        }
-      } catch (e) { errors.push(`${store.name}/${secName}: ${e.message}`); }
+      jobs.push(fetchSection(store.sheet, gid)
+        .then(items => items.forEach(it => consider(store.name, secName, it.desc, it.price, /sin stock/i.test(it.desc))))
+        .catch(e => errors.push(`${store.name}/${secName}: ${e.message}`)));
     }
-  }));
+  }
+
+  // El Búnker (pedix).
+  jobs.push(fetchBunker()
+    .then(items => items.forEach(it => consider('El Búnker', it.section, it.desc, it.price, !it.active)))
+    .catch(e => errors.push(`El Búnker: ${e.message}`)));
+
+  await Promise.all(jobs);
 
   results.sort((x, y) => (x.sinStock - y.sinStock) || (x.price - y.price));
   res.setHeader('Cache-Control', 's-maxage=3600');
