@@ -76,8 +76,10 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${key}`
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 1200,
+        // llama-3.3-70b-versatile y llama-3.1-8b-instant pasaron a plan Enterprise en Groq (sep 2026)
+        // y ya no responden en el plan gratis/developer. openai/gpt-oss-120b sigue activo.
+        model: 'openai/gpt-oss-120b',
+        max_completion_tokens: 1200,
         messages: [
           { role: 'system', content: SYSTEM },
           { role: 'user', content: `Verificá FRP para: "${query}". Respondé solo con el JSON array.` }
